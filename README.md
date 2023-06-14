@@ -1,5 +1,5 @@
 # Backend-App
-An App which is gonna implement CRUD using MongoDB Database.
+A Farm Plant App which is gonna implement CRUD using MongoDB Database.
 
 This App is gonna create , read , find , update and delete products.
 The Database that is going to be used here is MongoDB.
