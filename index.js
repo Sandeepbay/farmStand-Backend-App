@@ -18,6 +18,13 @@ app.listen(3000 , () => {
     console.log("PORT 3000 Started!")
 })
 
-app.get('/dogs' , (req,res) => {
-    res.send("WOOF!!")
+app.get('/products' , async (req,res) => {
+    const products = await Product.find({})
+    res.render('products/index.ejs' , { products })
+})
+
+app.get('/products/:id' , async (req,res) => {
+    const { id } = req.params
+    const product = await Product.findById(id)
+    res.render('products/show.ejs' , { product })
 })
