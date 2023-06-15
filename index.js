@@ -4,6 +4,8 @@ const path = require('path')
 const mongoose = require('mongoose')
 const Product = require('./models/product')
 
+app.use(express.urlencoded({ extended: true }))
+
 main().catch(err => console.log(err));
 
 async function main() {
@@ -21,6 +23,16 @@ app.listen(3000 , () => {
 app.get('/products' , async (req,res) => {
     const products = await Product.find({})
     res.render('products/index.ejs' , { products })
+})
+
+app.post('/products' , async (req,res) => {
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+    res.redirect(`/products/${newProduct._id}`)
+})
+
+app.get('/products/new', (req,res) => {
+    res.render('products/new.ejs')
 })
 
 app.get('/products/:id' , async (req,res) => {
