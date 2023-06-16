@@ -3,8 +3,10 @@ const app = express()
 const path = require('path')
 const mongoose = require('mongoose')
 const Product = require('./models/product')
+const methodOverride = require('method-override')
 
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 main().catch(err => console.log(err));
 
@@ -15,6 +17,8 @@ async function main() {
 
 app.set('views' , path.join(__dirname , 'views'))
 app.set('view engine' , 'ejs')
+
+const categories = ['Fruit' , 'Vegetable' , 'Drinks']
 
 app.listen(3000 , () => {
     console.log("PORT 3000 Started!")
@@ -32,7 +36,7 @@ app.post('/products' , async (req,res) => {
 })
 
 app.get('/products/new', (req,res) => {
-    res.render('products/new.ejs')
+    res.render('products/new.ejs' , { categories })
 })
 
 app.get('/products/:id' , async (req,res) => {
@@ -40,3 +44,24 @@ app.get('/products/:id' , async (req,res) => {
     const product = await Product.findById(id)
     res.render('products/show.ejs' , { product })
 })
+
+app.get('/products/:id/edit', async (req,res) => {
+    const { id } = req.params
+    const product = await Product.findById(id)
+    res.render('products/edit.ejs' , { product , categories})
+})
+
+app.put('/products/:id' , async (req,res) => {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id , req.body , { runValidators : true , new : true})
+    res.redirect(`/products/${product._id}`)
+})
+
+app.delete('/products/:id' , async(req,res) => {
+    const { id } = req.params;
+    const deletedProduct = await Product.findByIdAndDelete(id)
+    res.redirect('/products')
+})
+
+
+
